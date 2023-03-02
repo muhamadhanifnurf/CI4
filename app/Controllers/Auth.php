@@ -31,6 +31,8 @@ class Auth extends ResourceController
             ->get()->getRowArray();
         if ($data) {
             $data["token"] = md5($data["id_card_number"]);
+            $this->db->table('societies')->where("id", $data["id"])->update(['login_tokens' => $data["token"]]);
+
             $regid = [
                 "id" => $data['regional_id']
             ];

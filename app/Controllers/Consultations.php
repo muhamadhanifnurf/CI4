@@ -11,9 +11,29 @@ class Consultations extends ResourceController
      *
      * @return mixed
      */
+    public function __construct()
+    {
+        $this->db = \Config\Database::connect();
+    }
     public function index()
     {
         //
+        // $data = [
+        //     "status" => 'ok'
+        // ];
+        // return $this->respond($data);
+    }
+    public function detail()
+    {
+        $token = $this->request->getGet('token');
+        $data = $this->db->table('consultations')->get()->getResult();
+        $array["consultations"] = $data;
+        $array["token"] = $token;
+        $builder = $this->db->table('consultations');
+        $builder->join('societies', 'societies.id = consultations.society_id')
+            ->where('societies.login_tokens=', $token);
+        $query = $builder->get();
+        return $this->respond($array);
     }
 
     /**
